@@ -38,13 +38,15 @@ class GameApi:
             self.numero_tour = data[1]
             self.numero_phase = data[2]
             
-            # REND LA MAIN A L'IA <= Par exemple : self.piocher(0, 0)
-            
+            # REND LA MAIN A L'IA <= Par exemple : self.piocher(0) ou self.piocher(4,1)
+    
     #
     #   Action commands
     #
         
-    def piocher(self, expedition_index : int, player_index : int):
+    def piocher(self, expedition_index : int, player_index : int = -1):
+        if player_index == -1:
+            player_index = self.team_num
         self.server.send(f"PIOCHER|{expedition_index}|{player_index}")
         self.server.receive()
         self.end_tour()
@@ -53,7 +55,7 @@ class GameApi:
         self.server.send(f"UTILISER|{type_carte}")
         self.server.receive()
     
-    def attaquer(self, monster_index : int) -> str:
+    def attaquer(self, monster_index : int):
         self.server.send(f"ATTAQUER|{monster_index}")
         self.server.receive()
         self.end_tour()
