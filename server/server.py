@@ -36,8 +36,6 @@ class Server:
             
             welcome_data = welcome_msg.decode().strip().split('|')
             
-            print(welcome_data)
-            
             if welcome_data[0] == f"Bonjour {self.team_name} vous êtes l'équipe ":
                 self.team_num = welcome_data[1]
         else:
@@ -53,10 +51,15 @@ class Server:
     def send(self, msg: str):
         """ Sends a str to the server """
         print(f"Envoie du message {msg} au serveur !")
-        self.sock.sendall(msg.encode())
+        self.sock.sendall((msg + "\n").encode())
         
     def receive(self) -> list:
         """ Returns the responce of the server as a str"""
         print("En attente d'une reponse serveur !")
-        data = self.sock.recv(1024)
-        return data.decode().strip().split('|')
+        msg = self.sock.recv(1024)
+        data = msg.decode().strip().split('|')
+        
+        if (data[0] == "NOK"):
+            raise ValueError(f"Le serveur retourne NOK {data[1]}")
+        
+        return data
