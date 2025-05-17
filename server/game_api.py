@@ -14,13 +14,13 @@
     self.numero_phase
 """
 
-from server import Server
+from server.server import Server
 
 class GameApi:
     def __init__(self, server : Server):
         self.server = server
         self.team_name = self.server.team_name
-        self.team_num = self.server.team_num
+        self.team_num = int(self.server.team_num)
         
         self.end_tour()
         
@@ -117,7 +117,3 @@ class GameApi:
         data = self.server.receive()
         
         return data[0]
-        
-
-with Server("Test") as server:
-    api = GameApi(server)
