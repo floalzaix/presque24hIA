@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
-from ai import ActorCritic, compute_returns
-from server import Server
+from ai.actor_Critic import ActorCritic, compute_returns
+from server.server import Server
 
 # Exemple de mapping simplifié des actions
 ACTIONS = [
