@@ -1,0 +1,76 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "HuntToSurvive_IHM/1.0.0": {
+        "dependencies": {
+          "HuntToSurvive_RESEAU": "1.0.0",
+          "HuntToSurvive_VM": "1.0.0"
+        },
+        "runtime": {
+          "HuntToSurvive_IHM.dll": {}
+        }
+      },
+      "HuntToSurvive_Exception/1.0.0": {
+        "runtime": {
+          "HuntToSurvive_Exception.dll": {}
+        }
+      },
+      "HuntToSurvive_METIER/1.0.0": {
+        "dependencies": {
+          "HuntToSurvive_Exception": "1.0.0"
+        },
+        "runtime": {
+          "HuntToSurvive_METIER.dll": {}
+        }
+      },
+      "HuntToSurvive_RESEAU/1.0.0": {
+        "dependencies": {
+          "HuntToSurvive_METIER": "1.0.0"
+        },
+        "runtime": {
+          "HuntToSurvive_RESEAU.dll": {}
+        }
+      },
+      "HuntToSurvive_VM/1.0.0": {
+        "dependencies": {
+          "HuntToSurvive_METIER": "1.0.0"
+        },
+        "runtime": {
+          "HuntToSurvive_VM.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "HuntToSurvive_IHM/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HuntToSurvive_Exception/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HuntToSurvive_METIER/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HuntToSurvive_RESEAU/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HuntToSurvive_VM/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
