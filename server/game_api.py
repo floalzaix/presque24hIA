@@ -50,7 +50,7 @@ class GameApi:
         self.server.send(f"UTILISER|{type_carte}")
         self.server.receive()
     
-    def attaquer(self, monster_index : int) -> str:
+    def attaquer(self, monster_index : int):
         self.server.send(f"ATTAQUER|{monster_index}")
         self.server.receive()
         self.end_tour()
