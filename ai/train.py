@@ -48,6 +48,8 @@ def run_episode(api, model, optimizer, episode_num=0, team_name=""):
         reward_buffer.append(reward)
         total_reward += reward
 
+        api.jouer_tour()
+
         if is_episode_done(api):
             done = True
 

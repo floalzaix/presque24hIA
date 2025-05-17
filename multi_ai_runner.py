@@ -7,8 +7,8 @@ from ai.actor_critic import state_from_game
 import tensorflow as tf
 import time
 from multiprocessing import Queue
-import os
 from ai.model_utils import save_model
+import os
 
 def ai_worker(team_name: str, episode_num: int, result_queue=None, best_model_path=None):
     print(f"🤖 Lancement de l'IA {team_name} pour l'épisode {episode_num}")

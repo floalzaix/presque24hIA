@@ -92,6 +92,33 @@ class GameApi:
             self.piocher(0)
         self.end_tour()
     
+    def jouer_tour(self):
+        # On suppose que la phase nuit s'appelle "NUIT" ou "BLOOD_MOON"
+        if self.numero_phase in ["NUIT", "BLOOD_MOON"]:
+            # Utilise toutes les cartes disponibles (adapte selon ton jeu)
+            # On suppose que moi() retourne [vie, def, att, savoir]
+            me = self.moi()
+            if int(me[1]) > 0:  # Si score défense > 0
+                print("🛡️ Utilisation de la défense pendant la nuit")
+                self.utiliser("DEFENSE")
+                return
+            elif int(me[2]) > 0:  # Si score attaque > 0
+                print("⚔️ Utilisation de l'attaque pendant la nuit")
+                monstres = self.monstres()
+                cible = next((i for i, m in enumerate(monstres) if int(m[0]) > 0), None)
+                if cible is not None:
+                    self.attaquer(cible)
+                    return
+            # Ajoute d'autres types de cartes ici si besoin
+
+            # Si aucune carte utilisable, pioche
+            print("🃏 Pioche pendant la nuit")
+            self.piocher(0)
+        else:
+            # Hors nuit, pioche par défaut
+            print("🃏 Pioche hors nuit")
+            self.piocher(0)
+    
     #
     #   Info commands
     #
