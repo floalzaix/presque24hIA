@@ -69,7 +69,19 @@ class GameApi:
         self.server.send(f"UTILISER|{type_carte}")
         try:
             self.server.receive()
-        except ValueError :
+        except ValueError:
+            self.piocher(0)
+            return
+
+        # Après avoir utilisé, décider quoi faire
+        me = self.moi()
+        attaque = int(me[2])  # Supposons que l'indice 2 = attaque, à adapter selon ton jeu
+        monstres = self.monstres()
+        cible = next((i for i, m in enumerate(monstres) if int(m[0]) > 0), None)
+
+        if attaque > 0 and cible is not None:
+            self.attaquer(cible)
+        else:
             self.piocher(0)
     
     def attaquer(self, monster_index : int):
@@ -149,7 +161,6 @@ class GameApi:
             self.utiliser(parts_commande[1])
         elif parts_commande[0] == "ATTAQUER":
             self.attaquer(int(parts_commande[1]))
-    
-    
-    
-    
+
+
+
