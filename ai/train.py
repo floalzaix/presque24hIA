@@ -4,13 +4,12 @@ from ai.actor_critic import state_from_game
 import tensorflow as tf 
 import numpy as np
 
-def run_episode(api, model, optimizer, episode_num=0, team_name=""):
+def run_episode(api, model, optimizer, gamma=0.99):
     state_buffer = []
     action_buffer = []
     reward_buffer = []
 
     done = False
-    total_reward = 0
 
     while not done:
         # 1. Obtenir l'état du jeu
@@ -46,20 +45,18 @@ def run_episode(api, model, optimizer, episode_num=0, team_name=""):
         command = ACTIONS[action]
         reward = play_action(command, api)
         reward_buffer.append(reward)
-        total_reward += reward
-
-        api.jouer_tour()
 
         if is_episode_done(api):
             done = True
-
+        api.jouer_tour()
+        
     # 5. Calculer les retours
     returns = compute_returns(reward_buffer, gamma)
 
     # 6. Optimisation
     train_step(model, optimizer, state_buffer, action_buffer, returns)
-    # (La sauvegarde du modèle se fait dans ai_worker)
-    return total_reward
+    
+    save_model(model, f"models/model_episode_{episode_num}.h5")
 
 
 def play_action(command, api):
