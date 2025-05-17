@@ -14,7 +14,10 @@
     self.numero_phase
 """
 
-from server import Server
+from server.server import Server
+from ai.actor_critic import ActorCritic, compute_returns, state_from_game
+from ai.train import run_episode
+import tensorflow as tf
 
 class GameApi:
     def __init__(self, server : Server):
@@ -36,7 +39,7 @@ class GameApi:
             self.numero_phase = data[2]
             
             # REND LA MAIN A L'IA <= Par exemple : self.piocher(0, 0)
-    
+            
     #
     #   Action commands
     #
@@ -115,7 +118,6 @@ class GameApi:
         data = self.server.receive()
         
         return data[0]
-        
-
-with Server("Test") as server:
-    api = GameApi(server)
+    
+    
+    
