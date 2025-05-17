@@ -3,6 +3,7 @@ import pyautogui
 import time
 from multiprocessing import Process, Queue
 from multi_ai_runner import ai_worker
+import os
 
 # 👉 Change ce chemin avec celui vers ton .exe
 SERVER_EXECUTABLE_PATH = r"C:\Users\hgpereir\Documents\IA\iut\Serveur\HuntToSurvive_IHM.exe"
@@ -33,31 +34,36 @@ if __name__ == "__main__":
         server_process = launch_server_with_click()
 
         try:
-            # Lancer les IA avec une Queue pour récupérer les scores
+            # Chercher le modèle du meilleur épisode précédent
+            if episode > 0:
+                best_model_path = f"models/best_model_episode_{episode-1}.h5"
+                if not os.path.exists(best_model_path):
+                    best_model_path = None
+            else:
+                best_model_path = None
+
             result_queue = Queue()
             processes = []
             for name in TEAM_NAMES:
-                p = Process(target=ai_worker, args=(name, episode, result_queue))
+                # Passe best_model_path à chaque IA
+                p = Process(target=ai_worker, args=(name, episode, result_queue, best_model_path))
                 p.start()
                 processes.append(p)
 
-            # 🧠 On attend un peu que les IA se connectent puis on presse "Enter"
             wait_for_bots_and_press_enter()
 
-            # Attendre la fin des IA (le serveur s’arrête à la fin du jeu)
             for p in processes:
                 p.join()
 
             pyautogui.press("enter")
 
-            # Récupérer les scores et chemins de modèles
             results = [result_queue.get() for _ in TEAM_NAMES]
-            best = max(results, key=lambda x: x[1])  # x[1] = total_reward
+            best = max(results, key=lambda x: x[1])
 
             print(f"🏆 Meilleur modèle : {best[0]} avec score {best[1]}")
-            # Sauvegarder le meilleur modèle sous un nom générique
             import shutil
             if best[2]:
+                os.makedirs("models", exist_ok=True)
                 shutil.copy(best[2], f"models/best_model_episode_{episode}.h5")
 
         except Exception as e:
