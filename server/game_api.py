@@ -35,7 +35,7 @@ class GameApi:
             self.numero_tour = data[1]
             self.numero_phase = data[2]
             
-            # REND LA MAIN A L'IA <= Par exemple : self.piocher(0, 0)
+            # REND LA MAIN A L'IA <= Par exemple : self.piocher(0) ou self.piocher(4,1)
     
     #
     #   Action commands
