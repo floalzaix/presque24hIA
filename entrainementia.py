@@ -4,6 +4,7 @@ import time
 from multiprocessing import Process, Queue
 from multi_ai_runner import ai_worker
 import os
+import shutil
 
 # 👉 Change ce chemin avec celui vers ton .exe
 SERVER_EXECUTABLE_PATH = r"C:\Users\hgpereir\Documents\IA\iut\Serveur\HuntToSurvive_IHM.exe"
@@ -61,7 +62,6 @@ if __name__ == "__main__":
             best = max(results, key=lambda x: x[1])
 
             print(f"🏆 Meilleur modèle : {best[0]} avec score {best[1]}")
-            import shutil
             if best[2]:
                 os.makedirs("models", exist_ok=True)
                 shutil.copy(best[2], f"models/best_model_episode_{episode}.h5")

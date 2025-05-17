@@ -8,6 +8,7 @@ import tensorflow as tf
 import time
 from multiprocessing import Queue
 import os
+from ai.model_utils import save_model
 
 def ai_worker(team_name: str, episode_num: int, result_queue=None, best_model_path=None):
     print(f"🤖 Lancement de l'IA {team_name} pour l'épisode {episode_num}")
@@ -37,7 +38,7 @@ def ai_worker(team_name: str, episode_num: int, result_queue=None, best_model_pa
                     total_reward = run_episode(api, model, optimizer, episode_num, team_name)
                     # Sauvegarde du modèle pour ce bot
                     model_path = f"models/model_{team_name}_episode_{episode_num}.h5"
-                    model.save_weights(model_path)
+                    save_model(model, model_path)
                     if result_queue:
                         result_queue.put((team_name, total_reward, model_path))
                     break
