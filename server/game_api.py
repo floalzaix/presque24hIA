@@ -41,7 +41,9 @@ class GameApi:
     #   Action commands
     #
         
-    def piocher(self, expedition_index : int, player_index : int):
+    def piocher(self, expedition_index : int, player_index : int = -1):
+        if player_index == -1:
+            player_index = self.team_num
         self.server.send(f"PIOCHER|{expedition_index}|{player_index}")
         self.server.receive()
         self.end_tour()
