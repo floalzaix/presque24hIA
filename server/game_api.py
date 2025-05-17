@@ -18,15 +18,23 @@ from server.server import Server
 from ai.actor_critic import ActorCritic, compute_returns, state_from_game
 from ai.train import run_episode
 import tensorflow as tf
+from tensorflow.keras.models import load_model
+import numpy as np
+from ai.model_utils import load_actor_critic_model
+from utils.action import ACTIONS
+import os
+
 
 class GameApi:
-    def __init__(self, server : Server):
+    def __init__(self, server : Server, model):
         self.server = server
+        if os.path.isdir("models/actor_critic_model.keras"):
+            self.model = load_actor_critic_model(state_size, action_size)
+        else :
+            self.model = model
         self.team_name = self.server.team_name
         self.team_num = self.server.team_num
-        
-        self.end_tour()
-        
+                
     #
     #   Handle mannager
     #
@@ -39,7 +47,13 @@ class GameApi:
             self.numero_phase = data[2]
             
             # REND LA MAIN A L'IA <= Par exemple : self.piocher(0) ou self.piocher(4,1)
-    
+            state = state_from_game(self)
+            logits, _ = self.model(tf.convert_to_tensor([state]))
+            probs = tf.squeeze(logits)
+            action_index = np.random.choice(len(probs), p=probs.numpy())
+            command = ACTIONS[action_index]
+            
+            self.play_command(command)
     #
     #   Action commands
     #
@@ -53,11 +67,17 @@ class GameApi:
     
     def utiliser(self, type_carte : str):
         self.server.send(f"UTILISER|{type_carte}")
-        self.server.receive()
+        try:
+            self.server.receive()
+        except ValueError :
+            self.piocher(0)
     
     def attaquer(self, monster_index : int):
         self.server.send(f"ATTAQUER|{monster_index}")
-        self.server.receive()
+        try:
+            self.server.receive()
+        except ValueError :
+            self.piocher(0)
         self.end_tour()
     
     #
@@ -120,6 +140,16 @@ class GameApi:
         data = self.server.receive()
         
         return data[0]
+    
+    def play_command(self, command: str):
+        parts_commande = command.split("|")
+        if parts_commande[0] == "PIOCHER":
+            self.piocher(int(parts_commande[1]), int(parts_commande[2]))
+        elif parts_commande[0] == "UTILISER":
+            self.utiliser(parts_commande[1])
+        elif parts_commande[0] == "ATTAQUER":
+            self.attaquer(int(parts_commande[1]))
+    
     
     
     

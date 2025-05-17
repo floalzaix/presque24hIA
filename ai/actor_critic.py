@@ -2,6 +2,16 @@ import tensorflow as tf
 from tensorflow.keras import layers
 import numpy as np
 
+CARD_TYPES = {
+    "DEFENSE": 0,
+    "ATTAQUE": 1,
+    "SAVOIR": 2,
+    "VIE": 3,
+    "MONSTRE": 4,
+    "OBJET": 5,
+    "INCONNU": 6  # Par sécurité
+}
+
 class ActorCritic(tf.keras.Model):
     def __init__(self, state_size, action_size):
         super(ActorCritic, self).__init__()
@@ -22,9 +32,24 @@ def compute_returns(rewards, gamma=0.99):
     return np.array(returns)
 
 def state_from_game(api):
-        me = api.moi()
-        monstres = api.monstres()
-        pioches = api.pioches()
-        degats = api.degats()
-        state = me + [val for monstre in monstres for val in monstre] + [val for pioche in pioches for val in pioche] + degats
-        return np.array(state, dtype=np.float32)
+    me = api.moi()
+    monstres = api.monstres()
+    pioches = api.pioches()
+    degats = api.degats()
+
+    pioches_encoded = []
+    for type_str, value in pioches:
+        type_num = CARD_TYPES.get(type_str.upper(), CARD_TYPES["INCONNU"])
+        pioches_encoded.extend([type_num, value])
+
+    if isinstance(degats, str):
+        degats = [int(degats)]
+    elif isinstance(degats, int):
+        degats = [degats]
+
+    state = me \
+        + [val for monstre in monstres for val in monstre] \
+        + pioches_encoded \
+        + degats
+
+    return np.array(state, dtype=np.float32)
