@@ -1,7 +1,7 @@
 import subprocess
 import pyautogui
 import time
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 from multi_ai_runner import ai_worker
 
 # 👉 Change ce chemin avec celui vers ton .exe
@@ -33,10 +33,11 @@ if __name__ == "__main__":
         server_process = launch_server_with_click()
 
         try:
-            # Lancer les IA
+            # Lancer les IA avec une Queue pour récupérer les scores
+            result_queue = Queue()
             processes = []
             for name in TEAM_NAMES:
-                p = Process(target=ai_worker, args=(name, episode))
+                p = Process(target=ai_worker, args=(name, episode, result_queue))
                 p.start()
                 processes.append(p)
 
@@ -48,6 +49,17 @@ if __name__ == "__main__":
                 p.join()
 
             pyautogui.press("enter")
+
+            # Récupérer les scores et chemins de modèles
+            results = [result_queue.get() for _ in TEAM_NAMES]
+            best = max(results, key=lambda x: x[1])  # x[1] = total_reward
+
+            print(f"🏆 Meilleur modèle : {best[0]} avec score {best[1]}")
+            # Sauvegarder le meilleur modèle sous un nom générique
+            import shutil
+            if best[2]:
+                shutil.copy(best[2], f"models/best_model_episode_{episode}.h5")
+
         except Exception as e:
             print(f"⚠️ Erreur détectée : {e}")
 
