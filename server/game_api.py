@@ -14,7 +14,7 @@
     self.numero_phase
 """
 
-from server import Server
+from server.server import Server
 
 class GameApi:
     def __init__(self, server : Server):
@@ -34,16 +34,13 @@ class GameApi:
         if data[0] == "DEBUT_TOUR":
             self.numero_tour = data[1]
             self.numero_phase = data[2]
-            
-            # REND LA MAIN A L'IA <= Par exemple : self.piocher(0) ou self.piocher(4,1)
-    
+            self.piocher(0, 1)
+               
     #
     #   Action commands
     #
         
-    def piocher(self, expedition_index : int, player_index : int = -1):
-        if player_index == -1:
-            player_index = self.team_num
+    def piocher(self, expedition_index : int, player_index : int):
         self.server.send(f"PIOCHER|{expedition_index}|{player_index}")
         self.server.receive()
         self.end_tour()
